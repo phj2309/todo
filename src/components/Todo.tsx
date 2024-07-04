@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import styled from "styled-components";
-import useLocalStorage from "../hooks/useLocalStorage";
+import useTodoStore from "../store/todoStore";
 
 const Container = styled.div`
   text-align: center;
@@ -66,44 +66,14 @@ const TodoText = styled.span<{ completed: boolean }>`
     completed ? "#6c757d" : "#333"}; /* 완료: 회색, 미완료: 기본 텍스트 색상 */
 `;
 
-interface Todo {
-  id: number;
-  text: string;
-  completed: boolean;
-}
-
 const Todo: React.FC = () => {
-  const [todos, setTodos] = useLocalStorage<Todo[]>("todos", []);
+  const { todos, addTodo, toggleComplete, deleteTodo } = useTodoStore();
   const [input, setInput] = useState<string>("");
 
-  const addTodo = () => {
+  const handleAddTodo = () => {
     if (input.trim() === "") return;
-    const newTodo = {
-      id: Date.now(),
-      text: input,
-      completed: false,
-    };
-    setTodos([...todos, newTodo]);
+    addTodo(input);
     setInput("");
-  };
-
-  const toggleComplete = (id: number) => {
-    const updatedTodos = todos.map((todo) =>
-      todo.id === id ? { ...todo, completed: !todo.completed } : todo
-    );
-    setTodos(updatedTodos);
-  };
-
-  const deleteTodo = (id: number) => {
-    const updatedTodos = todos.filter((todo) => todo.id !== id);
-    setTodos(updatedTodos);
-  };
-
-  const editTodo = (id: number, newText: string) => {
-    const updatedTodos = todos.map((todo) =>
-      todo.id === id ? { ...todo, text: newText } : todo
-    );
-    setTodos(updatedTodos);
   };
 
   return (
@@ -116,7 +86,7 @@ const Todo: React.FC = () => {
           onChange={(e) => setInput(e.target.value)}
           placeholder="할 일을 입력하세요"
         />
-        <Button onClick={addTodo}>추가</Button>
+        <Button onClick={handleAddTodo}>추가</Button>
       </InputContainer>
       <TodoList>
         {todos.map((todo) => (
