@@ -83,7 +83,9 @@ const Todo: React.FC = () => {
         <Input
           type="text"
           value={input}
-          onChange={(e) => setInput(e.target.value)}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+            setInput(e.target.value)
+          }
           placeholder="할 일을 입력하세요"
         />
         <Button onClick={handleAddTodo}>추가</Button>
